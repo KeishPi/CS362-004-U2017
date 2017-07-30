@@ -10,21 +10,26 @@
 
 int checkDrawCard(int p, struct gameState *post) {
   struct gameState pre;
+  //make a copy of gameState into "pre", this way we can see what the gameState was before we call drawCard
   memcpy (&pre, post, sizeof(struct gameState));
 
   int r;
   //  printf ("drawCard PRE: p %d HC %d DeC %d DiC %d\n",
   //	  p, pre.handCount[p], pre.deckCount[p], pre.discardCount[p]);
-    
+	
+  //call drawCard and look at the old state of the game
   r = drawCard (p, post);
 
   //printf ("drawCard POST: p %d HC %d DeC %d DiC %d\n",
   //      p, post->handCount[p], post->deckCount[p], post->discardCount[p]);
-
+	
+  //if the deckCount was > 0, increment the handCount in pre, pull a card off the deck, decrement deckCount
+  //we're implementing what we think drawCard should do
   if (pre.deckCount[p] > 0) {
     pre.handCount[p]++;
     pre.hand[p][pre.handCount[p]-1] = pre.deck[p][pre.deckCount[p]-1];
     pre.deckCount[p]--;
+  //if discardCount > 0, copy post->deck, copy post->discard, set handCount
   } else if (pre.discardCount[p] > 0) {
     memcpy(pre.deck[p], post->deck[p], sizeof(int) * pre.discardCount[p]);
     memcpy(pre.discard[p], post->discard[p], sizeof(int)*pre.discardCount[p]);
@@ -59,9 +64,13 @@ int main () {
     for (i = 0; i < sizeof(struct gameState); i++) {
       ((char*)&G)[i] = floor(Random() * 256);
     }
+	//player number is 0 or 1
     p = floor(Random() * 2);
+	//setting deckCount of player p to not be greater than max deck
     G.deckCount[p] = floor(Random() * MAX_DECK);
+	//setting discardCount of player p to not be greater than max deck
     G.discardCount[p] = floor(Random() * MAX_DECK);
+	//setting handCount of player p to not be greater than max hand
     G.handCount[p] = floor(Random() * MAX_HAND);
     checkDrawCard(p, &G);
   }
