@@ -1,0 +1,25 @@
+Bug ID #1
+Reported By: Keisha Arnold
+Reported on: August 6, 2017
+Severity: Medium
+Priority: Medium
+Description:
+This bug was found on line 698 of my teammates dominion.c code: 
+	for (i = 1; i < 3; i++)
+
+This for loop causes the player to pick up 2 cards, whereas the expected behavior of the Smithy card is for the player to pick up 3 cards.  This is due to a simple one-off error where the variable i is initialized to 1 rather than 0.  The bug was found by running the cardtest1.c unit test against my teammate’s dominion.c code.  This unit test sets up two gameState structs- one is used to play the game, the other is manually manipulated by me.  The two structs are then compared for discrepancies.  The game is initialized and cardEffect is called using one of the gameState structs.  Discrepancies were found in the player’s handCount and deckCount.
+
+The expected versus actual handCount and deckCount are both off by 1.  This matches the bug found on line 698 of dominion.c.  I wouldn’t say this a severe bug because it doesn’t crash the program and still allows the game to continue, but it affects several gameState variables and could ultimately affect who wins the game since the player who plays a Smithy card may possibly get shorted a game changing card. 
+
+Bug ID #2
+Reported By: Keisha Arnold
+Reported on: August 6, 2017
+Severity: Medium
+Priority: Medium
+Description:
+This bug was found on line 727 of my teammates dominion.c code: 
+	discardCard(--handPos, currentPlayer, state, 0);
+
+This line decrements the handPos resulting in the wrong card being discarded from the hand. As mentioned in the previous section, this bug was not originally caught in my unit tests, but after refactoring cardtest3.c I was able to catch this bug in my teammate’s dominion.c code.  This unit test sets up two gameState structs- one is used to play the game, the other is manually manipulated by me.  The two structs are then compared for discrepancies.  The game is initialized, village card is put in the player’s hand and cardEffect is called using the gameState structs with the village card.  By iterating through the player’s hand to make sure the village card was discarded, discrepancies were found in the player’s village card count.
+
+As observed from the unit test, it fails when testing to see if village card was removed from the hand.  This matches the bug found on line 727 of dominion.c.  I wouldn’t say this a severe bug because it doesn’t halt the program and still allows the game to continue, but it could ultimately affect who wins the game since the player who plays a village card gets to keep the card and play it over and over again.

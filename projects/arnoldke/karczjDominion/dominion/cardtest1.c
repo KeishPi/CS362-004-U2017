@@ -1,7 +1,7 @@
 /***************************************************************
- * Filename: cardtest3.c
+ * Filename: cardtest1.c
  * Author: Keisha Arnold
- * Description: Unit test for villageCard() method in dominion.c
+ * Description: Unit test for smithyCard() method in dominion.c
  ***************************************************************/
 
 #include <stdio.h>
@@ -28,8 +28,7 @@ int main() {
   int i = 0;
   int numPlayers = 2;
   int randSeed = 501;
-  int cardsDrawn = 1; 
-  //int cardsGained = 2;
+  int cardsDrawn = 3;
   int cardsDiscarded = 1;
   int choice1 = 0, choice2 = 0, choice3 = 0;
   int handPos = 0, bonus = 0;
@@ -37,55 +36,26 @@ int main() {
     	       feast, gardens, mine, remodel, baron};
 	  
   struct gameState state, stateTest;
-  int villageCount = 0;
-  int villageCountTest = 0;
 
   //initialize Game
-  initializeGame(numPlayers, k, randSeed, &state);
-  //put Village card in the hand
-  stateTest.hand[0][1] = village; 
+  initializeGame(numPlayers, k, randSeed, &state); 
 
-  printf("***** Testing villageCard()... *****\n");
+  printf("***** Testing smithyCard()... *****\n");
 
-  //Test if hand count is unchanged (+1 card, but discard one)
-  printf("Testing Player 0 Villager hand count unchanged...\n");
+  //Test if handcount gets +3
+  printf("Testing Player 0 Smithy +3 hand count...\n");
   memcpy(&stateTest, &state, sizeof(struct gameState));
-  cardEffect(village, choice1, choice2, choice3, &stateTest, handPos, &bonus);
+  cardEffect(smithy, choice1, choice2, choice3, &stateTest, handPos, &bonus);
   pass = testEq(stateTest.handCount[0], state.handCount[0] + cardsDrawn - cardsDiscarded); 
   if (!pass) {
     printf("Player hand count incorrect. Expected: %d Actual: %d\n", state.handCount[0] + cardsDrawn - cardsDiscarded, stateTest.handCount[0]); 
   }
 
-  //Test players deckcount gets -1
-  printf("Testing Player 0 deck count -1...\n");
+  //Test players deckcount gets -3
+  printf("Testing Player 0 deck count -3...\n");
   pass = testEq(stateTest.deckCount[0], state.deckCount[0] - cardsDrawn);
   if(!pass) {
     printf("Player deck count incorrect. Expected: %d Actual: %d\n", state.deckCount[0] - cardsDrawn, stateTest.deckCount[0]);
-  }
-	
-  //discarded village
-  printf("Testing if Village card was removed from hand\n");
-	for (i = 0; i < stateTest.handCount[0]; i++) {
-		if (stateTest.hand[0][i] == k[2]) {
-			villageCountTest++;
-		}
-	}
-	for (i = 0; i < state.handCount[0]; i++) {
-		if (state.hand[0][i] == k[2]) {
-			villageCount++;
-		}
-	}
-	pass = testEq(villageCount-1, villageCountTest);
-	//printf("villagecounttest: %d, villagecount: %d\n", villageCountTest, villageCount-1);
-	if (!pass) {
-		printf("Village card not discarded from hand.\n");
-	}
-
-  //Test if numActions gets +2
-  printf("Testing Player 0 numActions +2...\n");
-  pass = testEq(stateTest.numActions, state.numActions + 2);
-  if(!pass) {
-    printf("Player numActions incorrect. Expected: %d Actual: %d\n", state.numActions + 2, stateTest.numActions);
   }
 
   //Test if score remains unchanged
@@ -144,7 +114,7 @@ int main() {
   }
 
   //Done
-  printf("***** villageCard() Tests Complete *****\n\n");
+  printf("***** smithyCard() Tests Complete *****\n\n");
 
   return 0;
 }

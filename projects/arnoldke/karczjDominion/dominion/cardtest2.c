@@ -1,8 +1,8 @@
-/***************************************************************
- * Filename: cardtest3.c
+/*************************************************************
+ * Filename: cardtest2.c
  * Author: Keisha Arnold
- * Description: Unit test for villageCard() method in dominion.c
- ***************************************************************/
+ * Description: Unit test for adventurerCard() in dominion.c
+ *************************************************************/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -28,65 +28,82 @@ int main() {
   int i = 0;
   int numPlayers = 2;
   int randSeed = 501;
-  int cardsDrawn = 1; 
-  //int cardsGained = 2;
+//  int cardsDrawn = 2;  //how do we know how many total cards were drawn???
+  int cardsGained = 2;
   int cardsDiscarded = 1;
   int choice1 = 0, choice2 = 0, choice3 = 0;
   int handPos = 0, bonus = 0;
+  int testTrCard;
+  int numTreasureTest = 0;
+  int numTreasure = 0;
   int k[10] = {adventurer, embargo, village, council_room, smithy,
     	       feast, gardens, mine, remodel, baron};
 	  
   struct gameState state, stateTest;
-  int villageCount = 0;
-  int villageCountTest = 0;
 
   //initialize Game
-  initializeGame(numPlayers, k, randSeed, &state);
-  //put Village card in the hand
-  stateTest.hand[0][1] = village; 
+  initializeGame(numPlayers, k, randSeed, &state); 
 
-  printf("***** Testing villageCard()... *****\n");
+  printf("***** Testing adventurerCard()... *****\n");
 
-  //Test if hand count is unchanged (+1 card, but discard one)
-  printf("Testing Player 0 Villager hand count unchanged...\n");
+  //Test if handcount gets +2
+  printf("Testing Player 0 Adventurer +2 hand count...\n");
   memcpy(&stateTest, &state, sizeof(struct gameState));
-  cardEffect(village, choice1, choice2, choice3, &stateTest, handPos, &bonus);
-  pass = testEq(stateTest.handCount[0], state.handCount[0] + cardsDrawn - cardsDiscarded); 
+  cardEffect(adventurer, choice1, choice2, choice3, &stateTest, handPos, &bonus);
+  pass = testEq(stateTest.handCount[0], state.handCount[0] + cardsGained - cardsDiscarded); 
   if (!pass) {
-    printf("Player hand count incorrect. Expected: %d Actual: %d\n", state.handCount[0] + cardsDrawn - cardsDiscarded, stateTest.handCount[0]); 
+    printf("Player hand count incorrect. Expected: %d Actual: %d\n", state.handCount[0] + cardsGained - cardsDiscarded, stateTest.handCount[0]); 
   }
 
-  //Test players deckcount gets -1
-  printf("Testing Player 0 deck count -1...\n");
+  //KEEP for now, but deck count -2 not always true? need to figure out how many cards player drew, then discarded.
+/*
+  //Test players deckcount gets -2
+  printf("Testing Player 0 deck count -2...\n");
   pass = testEq(stateTest.deckCount[0], state.deckCount[0] - cardsDrawn);
   if(!pass) {
     printf("Player deck count incorrect. Expected: %d Actual: %d\n", state.deckCount[0] - cardsDrawn, stateTest.deckCount[0]);
   }
-	
-  //discarded village
-  printf("Testing if Village card was removed from hand\n");
-	for (i = 0; i < stateTest.handCount[0]; i++) {
-		if (stateTest.hand[0][i] == k[2]) {
-			villageCountTest++;
-		}
-	}
-	for (i = 0; i < state.handCount[0]; i++) {
-		if (state.hand[0][i] == k[2]) {
-			villageCount++;
-		}
-	}
-	pass = testEq(villageCount-1, villageCountTest);
-	//printf("villagecounttest: %d, villagecount: %d\n", villageCountTest, villageCount-1);
-	if (!pass) {
-		printf("Village card not discarded from hand.\n");
-	}
-
-  //Test if numActions gets +2
-  printf("Testing Player 0 numActions +2...\n");
-  pass = testEq(stateTest.numActions, state.numActions + 2);
-  if(!pass) {
-    printf("Player numActions incorrect. Expected: %d Actual: %d\n", state.numActions + 2, stateTest.numActions);
+*/
+/*
+  //Test if there are two additional treasure cards
+  //Will always be on the top?
+  printf("Testing if two cards added to hand are treasure cards...\n");
+  //for(i = 0; i < stateTest.handCount[0]; i++) {
+  testTrCard = stateTest.hand[0][stateTest.handCount[0]-1];
+  if(testTrCard != gold || testTrCard != silver || testTrCard != copper) {
+    printf("Test FAILED\n");
+    printf("Card not a Treasure Card\n");
   }
+  testTrCard = stateTest.hand[0][stateTest.handCount[0]-2];
+  if(testTrCard != gold || testTrCard != silver || testTrCard != copper) {
+    printf("Test FAILED\n");
+    printf("Card not a Treasure Card\n");
+  }
+  else {
+    printf("Test PASSED\n");
+  }
+*/
+  
+  //Test if the hand contains 2 additional treasure cards
+  printf("Test if player has 2 additional treasure cards...");
+  for(i = 0; i < stateTest.handCount[0]; i++) {
+    testTrCard = stateTest.hand[0][i];
+    if(testTrCard == gold || testTrCard == silver || testTrCard == copper) {
+      numTreasureTest++;
+    }
+  }
+
+  for(i = 0; i < state.handCount[0]; i++) {
+    testTrCard = state.hand[0][i];
+    if(testTrCard == gold || testTrCard == silver || testTrCard == copper) {
+      numTreasure++;
+    }
+  }
+ 
+  pass = testEq(numTreasure + 2, numTreasureTest);
+  if(!pass) {
+    printf("Player does not have 2 additional Treasure Cards. Expected %d Actual %d\n", numTreasure + 2, numTreasureTest);
+  }  
 
   //Test if score remains unchanged
   printf("Testing Player 0 score unchanged...\n");
@@ -144,7 +161,7 @@ int main() {
   }
 
   //Done
-  printf("***** villageCard() Tests Complete *****\n\n");
+  printf("***** adventurerCard() Tests Complete *****\n\n");
 
   return 0;
 }
