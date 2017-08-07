@@ -673,11 +673,12 @@ int adventurerCard(int currentPlayer, int temphand[], struct gameState *state) {
 }
 
 // BUG- only allows 2 cards to be drawn
+// FIXED BUG!
 int smithyCard(int currentPlayer, int handPos, struct gameState *state) {
 	int i;
 	//+3 Cards
-	for (i = 0; i < 2; i++)
-	//for (i = 0; i < 3; i++)
+	//for (i = 0; i < 2; i++)
+	for (i = 0; i < 3; i++)
 	{
 		drawCard(currentPlayer, state);
 	}
